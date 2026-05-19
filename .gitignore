@@ -1,0 +1,40 @@
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Dependencies
+node_modules/
+.wrangler/
+
+# Build outputs
+dist/
+.output/
+
+# Test results
+tests/stress/results/
+tests/chaos/logs/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Sandbox artifacts (stored in R2, not git)
+sandbox-artifacts/
+screenshots/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/settings.json
+.idea/
+*.swp
+
+# Secrets (never commit these)
+*.pem
+*.key
+*.secret

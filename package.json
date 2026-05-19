@@ -1,0 +1,52 @@
+{
+  "name": "forgeos",
+  "version": "0.1.0",
+  "description": "AI-native autonomous build platform. gstack-derived harness + RLVR + meta-learning. Full loop: spec → build → review → test → deploy → monitor → learn.",
+  "author": "rahlplx <Lab Launchpad>",
+  "license": "MIT",
+  "homepage": "https://github.com/rahlplx/forgeos",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rahlplx/forgeos.git"
+  },
+  "keywords": [
+    "ai-agents",
+    "claude-code",
+    "gstack",
+    "rlvr",
+    "cloudflare-workers",
+    "durable-objects",
+    "vibe-coding",
+    "autonomous-agents",
+    "meta-learning",
+    "grpo"
+  ],
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "build": "bun run build:skills && bun run build:worker",
+    "build:skills": "bun run scripts/build-skills.ts",
+    "build:worker": "wrangler deploy --dry-run",
+    "seed": "bun run scripts/seed-skills.ts",
+    "test": "bun test",
+    "test:stress": "k6 run tests/stress/k6-stress.js",
+    "test:chaos:oracle": "bun run tests/chaos/oracle-failover.ts",
+    "test:stress:sprints": "k6 run tests/stress/k6-stress.js -e SPRINTS=true",
+    "rl:eval": "python3 rl/grpo_eval.py",
+    "meta:run": "python3 meta/pattern_extractor.py",
+    "lint": "biome check .",
+    "format": "biome format --write ."
+  },
+  "dependencies": {
+    "@cloudflare/workers-types": "^4.20260101.0",
+    "@cloudflare/dynamic-workflows": "latest",
+    "hono": "^4.0.0",
+    "zod": "^3.22.0"
+  },
+  "devDependencies": {
+    "wrangler": "^3.90.0",
+    "typescript": "^5.4.0",
+    "@biomejs/biome": "^1.6.0",
+    "bun-types": "latest"
+  }
+}

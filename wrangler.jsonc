@@ -1,0 +1,95 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "forgeos",
+  "main": "src/worker.ts",
+  "compatibility_date": "2026-04-01",
+  "compatibility_flags": ["nodejs_compat"],
+
+  // Durable Objects — one per project (actor model)
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "PROJECT",
+        "class_name": "ProjectActor"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["ProjectActor"]
+    }
+  ],
+
+  // Cloudflare Workflows — sprint DAG
+  "workflows": [
+    {
+      "name": "sprint-workflow",
+      "binding": "SPRINT_WORKFLOW",
+      "class_name": "SprintWorkflow"
+    }
+  ],
+
+  // KV — skill prompt cache, active versions
+  "kv_namespaces": [
+    {
+      "binding": "SKILL_KV",
+      "id": "REPLACE_WITH_KV_ID"
+    }
+  ],
+
+  // R2 — artifact storage (zero egress)
+  "r2_buckets": [
+    {
+      "binding": "ARTIFACTS",
+      "bucket_name": "forgeos-artifacts"
+    }
+  ],
+
+  // Vectorize — skill vectors, taste profiles, meta-patterns
+  "vectorize": [
+    {
+      "binding": "SKILL_VECTORS",
+      "index_name": "forgeos-skills",
+      "dimensions": 768,
+      "metric": "cosine"
+    },
+    {
+      "binding": "META_PATTERNS",
+      "index_name": "forgeos-meta",
+      "dimensions": 768,
+      "metric": "cosine"
+    }
+  ],
+
+  // Workers AI — Tier-0 inference at edge
+  "ai": {
+    "binding": "AI"
+  },
+
+  // AI Gateway — caching + observability
+  "ai_gateway": {
+    "id": "forgeos-gateway"
+  },
+
+  // Queues — GRPO eval jobs, OSS corpus re-index
+  "queues": {
+    "producers": [
+      { "binding": "GRPO_QUEUE", "queue": "forgeos-grpo-eval" },
+      { "binding": "CORPUS_QUEUE", "queue": "forgeos-corpus-reindex" }
+    ],
+    "consumers": [
+      { "queue": "forgeos-grpo-eval", "max_batch_size": 10 }
+    ]
+  },
+
+  // Environment variables (set via wrangler secret)
+  "vars": {
+    "ENVIRONMENT": "production",
+    "SKILL_COUNT": "14",
+    "GRPO_N_VARIANTS": "4",
+    "GRPO_EVAL_EVERY_N_SPRINTS": "10",
+    "SANDBOX_COORDINATOR_URL": "https://YOUR_ORACLE_ARM_IP:8000",
+    "COOLIFY_URL": "https://YOUR_COOLIFY_INSTANCE"
+  }
+}
